@@ -135,7 +135,7 @@ const SkillsSection:React.FC<SkillsSectionProps> = (props) => {
                                     <div 
                                         key={hobby} 
                                         className="hobby"
-                                        style={{animationDelay: `${6 + animationDelayArray[index]}s`}}
+                                        style={{animationDelay: `${4 + animationDelayArray[index]}s`}}
                                     >
                                         <div className="hobby__img"><img draggable="false" src={hobbiesImagesArray[index]} alt="" /></div>
                                         <div className="hobby__description">{hobby}</div>

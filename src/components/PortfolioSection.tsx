@@ -9,6 +9,8 @@ interface PortfolioSectionProps {
     handleMouseUp:React.MouseEventHandler<HTMLDivElement>;
     mousePosition:number;
     dragging:boolean;
+    sliderScrollbarWidth:number;
+    setSliderScrollbarWidth:React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
@@ -17,9 +19,15 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     const handleMouseMove = props.handleMouseMove;
     const handleMouseUp = props.handleMouseUp;
     const mousePosition = props.mousePosition;
-    const dragging = props.dragging;
+    const sliderScrollbarWidth = props.sliderScrollbarWidth;
+    const setSliderScrollbarWidth = props.setSliderScrollbarWidth;
+    // const dragging = props.dragging;
     
-    const portfolio__works = Array.from({length: 6}, (_,index) => index);
+    const portfolio__works = Array.from({length: 8}, (_,index) => index);
+    const workLinks = [
+        'https://github.com/Drunken1sailor?tab=repositories',
+        'https://github.com/Drunken1sailor?tab=repositories'
+    ];
     const workImages = [
         prokopjevaLenaSitePng,
         yachtingSpbsuSitePng
@@ -29,14 +37,14 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         'yachting-spbsu.ru'
     ];
     const workDescriptions = [
-        'Website of russian artist Lena Prokopjeva',
-        'Prototype-site of russian yachting club'
+        'Website of artist Lena Prokopjeva',
+        'Prototype-site of Saint Petersburgs yachting club ' 
     ];
 
     const portfolioTitleAnimation = (scrollPos >= 1500 && scrollPos <= 2200);
 
     const sliderScrollbarRef = useRef<HTMLDivElement|null>(null);
-    const [sliderScrollbarWidth, setSliderScrollbarWidth] = useState(0);
+
     
     const portfolioWorksRef = useRef<HTMLDivElement|null>(null);
     const [portfolioWorksWidth, setPortofolioWorksWidth] = useState(0);
@@ -50,18 +58,27 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         }
     },[]);
 
-    const [isScreenLeftSide, setIsScreenLeftSide] = useState(false);
-    const workElements = document.querySelectorAll('.work');
+    const [movementPercent, setMovementPercent] = useState(0);
     useEffect(()=>{
-        workElements.forEach((work=>{
-            const workDom = work.getBoundingClientRect();
-            const screenMiddle = sliderScrollbarWidth/2;
+        setMovementPercent(mousePosition / (sliderScrollbarWidth-40));
+    },[mousePosition]);
 
-            if(workDom.left < screenMiddle){
-                setIsScreenLeftSide(true)
-            }
-        }))
-    },[dragging]);
+    const workElements = document.querySelectorAll('.work') as NodeListOf<HTMLElement>;
+    
+
+    if (workElements) {
+    const radius = portfolioWorksWidth/2; 
+    const worksCount = portfolio__works.length;
+    const angle = (2*Math.PI) / worksCount;
+
+    workElements.forEach((work, index) => {
+        const x = radius * Math.cos(angle * index - Math.PI/2);
+        const z = -radius * Math.sin(angle * index - Math.PI/2);
+        const rotationY = angle * index;
+
+        work.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${rotationY}rad)`;
+    });
+    }
 
     return (
         <section className="section portfolio" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
@@ -70,51 +87,56 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
                     <h2>works</h2>
                 </div>
                 <div className="row portfolio__slider slider">
-                    {/* <div className="column portfolio__column portfolio__column_1">
-
-                    </div>
-                    <div className="column portfolio__column">
-
-                    </div>
-                    <div className="column portfolio__column portfolio__column_3">
-
-                    </div> */}
                     <div 
                         ref={portfolioWorksRef}
                         className="row portfolio__works works"
+                        style={{
+                            transform: 
+                            `
+                            ${(movementPercent>0 && movementPercent<1)?
+                                `rotateY(${-360*movementPercent}deg`:
+                                ``}
+                            `
+                        }}
                     >
                         {portfolio__works.map((work,index)=>(
-                            <div 
+                            <>
+                            <a 
                                 key={work}
                                 className="column portfolio__column work"
-                                style={{
-                                    transform: 
-                                    `
-                                    translateX(
-                                        ${(mousePosition<0) ? 
-                                        '0px': 
-                                        (mousePosition>sliderScrollbarWidth-40) ?
-                                            `${-(portfolioWorksWidth-sliderScrollbarWidth)}px` :
-                                            `${-mousePosition*((portfolioWorksWidth-sliderScrollbarWidth)/(sliderScrollbarWidth-40))}px`}
-                                    ) 
-                                    perspective(800px)
-                                    rotateY(
-                                        ${isScreenLeftSide?
-                                            `${mousePosition*0.1}deg`:
-                                            `${-mousePosition*0.1}deg`
-                                        }
-                                    )
-                                    `
-
-                                }}
+                                href={workLinks[index]}
+                                target='_blanc'
                             >
-                                <div className="work__img"></div>
-                                <div className="work__name"></div>
-                                <div className="work__description">{work}</div>
-                            </div>
+                                {workLinks[index] ?
+                                    ( 
+                                    <>
+                                        <div className="work__back"></div>
+                                        <div className="work__content">
+                                            <div className="work__img">
+                                                <img src={workImages[index]} alt="work image" />
+                                            </div>
+                                            <div className="work__name">
+                                                {workNames[index]}
+                                            </div>
+                                            <div className="work__description">
+                                                {workDescriptions[index]}
+                                            </div>
+                                        </div>
+                                    </>
+                                    ):
+                                    (
+                                    <>
+                                        <div className="work__back"></div>
+                                        <div className="work__comingSoon work__content">
+                                            <p>coming soon</p>
+                                        </div>
+                                    </>    
+                                    )
+                                }
+                            </a>
+                            </>
                         ))}
                     </div>
-                    {/* <div className="test">{isScreenLeftSide?'true':'false'}</div> */}
                     <div ref={sliderScrollbarRef} className="slider__scrollbar scrollbar">
                         <div 
                             className="scrollbar__thumb"

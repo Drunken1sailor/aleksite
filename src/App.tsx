@@ -6,6 +6,8 @@ import PortfolioSection from './components/PortfolioSection';
 import Footer from './components/Footer';
 
 function App() {
+  const [sliderScrollbarWidth, setSliderScrollbarWidth] = useState(0);
+
   const [scrollPos, setScrollPos] = useState(0);
 
   const [dragging, setDragging] = useState(false);
@@ -19,7 +21,13 @@ function App() {
   const handleMouseMove:React.MouseEventHandler<HTMLDivElement> = (e) => {
     if(dragging){
         const newX = e.clientX - startX;
-        setMousePosition(newX);
+
+        if(newX>0 && newX<sliderScrollbarWidth-40) 
+          {setMousePosition(newX)} 
+        else{
+          if(newX<=0) setMousePosition(0);
+          if(newX>=sliderScrollbarWidth-40) setMousePosition(sliderScrollbarWidth-40)
+        }
     }
   }
   const handleMouseUp:React.MouseEventHandler<HTMLDivElement> = () => {
@@ -52,6 +60,8 @@ function App() {
         handleMouseUp={handleMouseUp}
         mousePosition={mousePosition}
         dragging={dragging}
+        sliderScrollbarWidth={sliderScrollbarWidth}
+        setSliderScrollbarWidth={setSliderScrollbarWidth}
       />
       <Footer/>
     </>
