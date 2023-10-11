@@ -4,19 +4,17 @@ import Header from './components/Header';
 import SkillsSection from './components/SkillsSection';
 import PortfolioSection from './components/PortfolioSection';
 import Footer from './components/Footer';
+import bodyBg from './img/bodyBg.png';
 
 function App() {
+  //functional for portfolio's scrolling by mouse
   const [sliderScrollbarWidth, setSliderScrollbarWidth] = useState(0);
-
-  const [scrollPos, setScrollPos] = useState(0);
-
   const [dragging, setDragging] = useState(false);
   const [mousePosition, setMousePosition] = useState(0);
   const [startX, setStartX] = useState(0);
   const handleMouseDown:React.MouseEventHandler<HTMLDivElement> = (e) => {
     setDragging(true);
     setStartX(e.clientX - mousePosition);
-    console.log(dragging);
   }
   const handleMouseMove:React.MouseEventHandler<HTMLDivElement> = (e) => {
     if(dragging){
@@ -33,13 +31,16 @@ function App() {
   const handleMouseUp:React.MouseEventHandler<HTMLDivElement> = () => {
     setDragging(false);
   }
+  
 
+  //page's scroll monitoring
+  const [scrollPos, setScrollPos] = useState(0);
+  const handleScroll = () => {
+      requestAnimationFrame(() => {
+          setScrollPos(window.scrollY);
+      });
+  }
   useEffect(()=>{
-    const handleScroll = () => {
-        requestAnimationFrame(() => {
-            setScrollPos(window.scrollY);
-        });
-    }
     window.addEventListener('scroll',handleScroll);
     return () => {
         window.removeEventListener('scroll', handleScroll);
@@ -47,7 +48,10 @@ function App() {
   },[]);
 
   return (
-    <>
+    <div onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
+      <div className="body__background">
+        <img src={bodyBg}/>
+      </div>
       <div className="scrollPosCount">
           {scrollPos}
       </div>
@@ -55,16 +59,14 @@ function App() {
       <SkillsSection scrollPos={scrollPos}/>
       <PortfolioSection  
         scrollPos={scrollPos} 
-        handleMouseDown={handleMouseDown} 
-        handleMouseMove={handleMouseMove} 
-        handleMouseUp={handleMouseUp}
+        handleMouseDown={handleMouseDown}
         mousePosition={mousePosition}
-        dragging={dragging}
+        setMousePosition={setMousePosition}
         sliderScrollbarWidth={sliderScrollbarWidth}
         setSliderScrollbarWidth={setSliderScrollbarWidth}
       />
       <Footer/>
-    </>
+    </div>
   )
 }
 

@@ -1,32 +1,32 @@
 import { useState, useRef, useEffect } from 'react';
 import prokopjevaLenaSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
-import yachtingSpbsuSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
+import yachtingSpbsuSitePng from '../img/portfolio/yachting-spbsu_img.png';
+import portgolioBgImg from '../img/portfolio/portfolioBg.png';
+import workBgImg from '../img/portfolio/workBg.png';
 
 interface PortfolioSectionProps {
     scrollPos:number;
     handleMouseDown:React.MouseEventHandler<HTMLDivElement>;
-    handleMouseMove:React.MouseEventHandler<HTMLDivElement>;
-    handleMouseUp:React.MouseEventHandler<HTMLDivElement>;
     mousePosition:number;
-    dragging:boolean;
+    setMousePosition:React.Dispatch<React.SetStateAction<number>>;
     sliderScrollbarWidth:number;
     setSliderScrollbarWidth:React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
+    //props for scrolling slidebar
     const scrollPos = props.scrollPos;
     const handleMouseDown = props.handleMouseDown;
-    const handleMouseMove = props.handleMouseMove;
-    const handleMouseUp = props.handleMouseUp;
     const mousePosition = props.mousePosition;
+    const setMousePosition = props.setMousePosition;
     const sliderScrollbarWidth = props.sliderScrollbarWidth;
     const setSliderScrollbarWidth = props.setSliderScrollbarWidth;
-    // const dragging = props.dragging;
     
+    //works data
     const portfolio__works = Array.from({length: 8}, (_,index) => index);
     const workLinks = [
-        'https://github.com/Drunken1sailor?tab=repositories',
-        'https://github.com/Drunken1sailor?tab=repositories'
+        'https://prokopjeva-lena.ru/',
+        'https://drunken1sailor.github.io/yachting-spbsu-client-build/'
     ];
     const workImages = [
         prokopjevaLenaSitePng,
@@ -41,14 +41,10 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         'Prototype-site of Saint Petersburgs yachting club ' 
     ];
 
-    const portfolioTitleAnimation = (scrollPos >= 1500 && scrollPos <= 2200);
-
-    const sliderScrollbarRef = useRef<HTMLDivElement|null>(null);
-
-    
+    //data for scrolling and rotating functional
+    const sliderScrollbarRef = useRef<HTMLDivElement|null>(null);    
     const portfolioWorksRef = useRef<HTMLDivElement|null>(null);
     const [portfolioWorksWidth, setPortofolioWorksWidth] = useState(0);
-
     useEffect(()=>{
         if(sliderScrollbarRef.current){
             setSliderScrollbarWidth(sliderScrollbarRef.current.clientWidth);
@@ -64,8 +60,6 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     },[mousePosition]);
 
     const workElements = document.querySelectorAll('.work') as NodeListOf<HTMLElement>;
-    
-
     if (workElements) {
     const radius = portfolioWorksWidth/2; 
     const worksCount = portfolio__works.length;
@@ -80,8 +74,75 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     });
     }
 
+    //animatoin of works
+    let animationDelays = Array.from({length:workElements.length},(_,index)=>index*0.3);
+    const temp = animationDelays.slice(6);
+    animationDelays = animationDelays.slice(0,7);
+    animationDelays = temp.concat(animationDelays);
+    const worksRotationAnimation = scrollPos>=1600;
+    const works = document.getElementById('works');
+    if(worksRotationAnimation){
+        works?.classList.add('worksRotationAnimation');
+        workElements.forEach(element=>{
+            element.classList.add('workAppearanceAnimation')
+        })
+    }
+
+    //adaptive condition for title animation
+    const element = document.getElementById("portfolio");
+    const elementRect = element?.getBoundingClientRect();
+    const scrollTop = window.scrollY || window.pageYOffset;
+    let portfolioTitleAnimation = false;
+    if (elementRect) {
+        const portfolioTop = elementRect.top + scrollTop;
+        const portfolioBottom = elementRect.bottom + scrollTop;
+        const portfolioHeight = portfolioBottom - portfolioTop;
+        portfolioTitleAnimation = (scrollPos >= portfolioTop && scrollPos <= portfolioBottom-portfolioHeight*0.3);
+    } 
+
+    //scrollHandler functional
+    const [isTouching, setIsTouching] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [endX, setEndX] = useState(0);
+    const [touchPosition, setTouchPosition] = useState(0);
+    const isPCVersion = window.innerWidth>1280;
+    const handleTouchStart:React.TouchEventHandler<HTMLElement> = (e)=>{
+        if (e.touches.length === 1) {
+            setStartX(e.touches[0].clientX);
+            setIsTouching(true);
+          }
+    }
+    const handleTouchMove:React.TouchEventHandler<HTMLElement> = (e)=>{
+        if(isTouching && e.touches.length === 1){
+            const deltaX = e.touches[0].clientX - (startX||0);
+            setTouchPosition(endX+deltaX);
+            console.log('touchPos = ', touchPosition, '\ndeltaX = ', deltaX);
+        }
+    }
+    const handleTouchEnd = ()=>{
+        setIsTouching(false);
+        setEndX(touchPosition);
+    }
+    const handleWheel = (event:WheelEvent)=>{
+        event.preventDefault();
+        let temp = mousePosition;
+        temp += event.deltaY*0.3;
+        if(temp>=0 && temp<=sliderScrollbarWidth-40)
+            setMousePosition(temp);
+        else if(temp<0)
+            setMousePosition(0);
+        else setMousePosition(sliderScrollbarWidth-40);
+    }
+    works?.addEventListener("wheel", handleWheel);
+    workElements.forEach(element=>{
+        element.addEventListener("wheel", handleWheel);
+    });
+
     return (
-        <section className="section portfolio" onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
+        <section onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} className="section portfolio" id='portfolio'>
+            <div className="portfolio__bg">
+                <img className="main-img" src={portgolioBgImg} draggable="false"/>
+            </div>
             <div className="container portfolio__container">
                 <div className={`title portfolio__title ${portfolioTitleAnimation ? 'sectionTitleAnimationIn' : 'sectionTitleAnimationOut'}`}>
                     <h2>works</h2>
@@ -89,13 +150,21 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
                 <div className="row portfolio__slider slider">
                     <div 
                         ref={portfolioWorksRef}
-                        className="row portfolio__works works"
+                        id='works'
+                        className='row portfolio__works works'
                         style={{
                             transform: 
                             `
-                            ${(movementPercent>0 && movementPercent<1)?
+                            ${(movementPercent>0 && movementPercent<1 && isPCVersion)?
                                 `rotateY(${-360*movementPercent}deg`:
-                                ``}
+                                (movementPercent<=0)?
+                                    'rotateY(0)':
+                                    'rotateY(-360deg)'
+                            }
+                            ${!isPCVersion?
+                                `rotateY(${touchPosition*0.2}deg`:
+                                ''
+                            }
                             `
                         }}
                     >
@@ -103,17 +172,22 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
                             <>
                             <a 
                                 key={work}
-                                className="column portfolio__column work"
+                                className='column portfolio__column work'
                                 href={workLinks[index]}
                                 target='_blanc'
+                                style={{animationDelay: `${animationDelays[index]}s`}}
+                                onTouchStart={handleTouchStart}
                             >
                                 {workLinks[index] ?
                                     ( 
                                     <>
                                         <div className="work__back"></div>
                                         <div className="work__content">
+                                            <div className="work__bg">
+                                                <img src={workBgImg}/>
+                                            </div>
                                             <div className="work__img">
-                                                <img src={workImages[index]} alt="work image" />
+                                                <img src={workImages[index]} alt="work image" draggable="false"/>
                                             </div>
                                             <div className="work__name">
                                                 {workNames[index]}

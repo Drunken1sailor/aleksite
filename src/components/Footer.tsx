@@ -3,7 +3,6 @@ import instagramImg from "../img/footer/instagram.png";
 import telegramImg from "../img/footer/telegram.png";
 import whatsappImg from "../img/footer/whatsapp.png";
 import viberImg from "../img/footer/viber.png";
-import mountainImg from "../img/footer/footerMountain.png";
 
 const Footer = () => {
     const copyToClipboard = () => {
@@ -27,7 +26,7 @@ const Footer = () => {
     return (
         <section className="section footer">
             <div className="mountain footer__mountain">
-                <img src={mountainImg} alt="there should have been mountain here" draggable="false"/>
+                {/* <img src={mountainImg} alt="there should have been mountain here" draggable="false"/> */}
             </div>
             <div className="container footer__container">
                 <div className="row footer__row">
