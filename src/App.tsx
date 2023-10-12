@@ -52,9 +52,9 @@ function App() {
       <div className="body__background">
         <img src={bodyBg}/>
       </div>
-      <div className="scrollPosCount">
+      {/* <div className="scrollPosCount">
           {scrollPos}
-      </div>
+      </div> */}
       <Header scrollPos={scrollPos}/>
       <SkillsSection scrollPos={scrollPos}/>
       <PortfolioSection  
