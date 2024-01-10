@@ -550,7 +550,6 @@ img {
 .skillsSection__container{
   width: 80%;
   height: auto;
-  padding: 0 0 150px;
   margin: 0 auto;
   padding:0;
   display: flex;
@@ -1376,25 +1375,79 @@ img {
 
 }
 @media(max-width:750px){
+  .header__container{
+    /* width: 900px;
+    position:relative;
+    display:flex;
+    justify-content: center;
+    z-index: 2;
+    transition: transform .1s linear 0s;
+
+    margin: 50px auto 0; */
+
+  }
+  /* .header__avatar{
+    top:0;
+    left:50%;
+    transform: translateX(-50%);
+  } */
   .header__title h1{
+    font-size: 14px;
     line-height: 50px;
   }
   .skillsSection{
     /* border:2px solid red; */
     height: auto;
     max-height: none;
+    padding: 0;
+  }
+  .skills{
+    /* border:2px solid red; */
+  }
+  .skills__title{
+    position: relative;
+    transform: none;
+    margin:0 auto;
+    padding:0;
   }
   .skillsSection__container{
+    /* border:2px solid red; */
     flex-direction: column;
+    margin:0;
+    padding:0 !important;
+    height: auto;
+    min-height: auto;
+    max-height:auto;
   }
   .skillsSection__leftSide{
     width:80%;
+    margin-bottom: 50px !important;
   }
   .skillsSection__rightSide{
+    height: auto;
     /* height: auto;border:2px solid red; */
+    position: relative;
+  }
+  .skills__row{
+    /* border:2px solid red; */
+    position: relative;
+    top:0; left:50%;
+    z-index:11;
+    width: 80%;
+    flex-wrap: wrap;
+    margin: -20px;
+    transform: translateX(calc(-50% + 20px)) rotate(0deg);
+  }
+  .skills__column:nth-child(n){
+    margin-top: 0;
+    margin-bottom: 20px;
   }
   .tentacle{
     display: none;
+  }
+  .hobby{
+    height:70px !important;
+    width: 55px !important;
   }
   .portfolio__bg .main-img{
     left:50%;
@@ -1417,15 +1470,18 @@ img {
   @keyframes avatar_animation_in {
     0%{
       left:-100%;
-      transform: translateX(-800px);
+      transform: translateY(-20%) translateX(-800px);
     }
     50%{
-      left:-20px;
-      transform: translateX(30px);
+      left:calc(50% + 15px);
+      transform: translateY(-20%) translateX(-50%);
     }
     100%{
-      left:-20px;
-      transform: translateX(0);
+      left:50%;
+      transform: translateY(-20%) translateX(-50%);
     }
   }
+}
+@media(max-width:500px){
+
 }
