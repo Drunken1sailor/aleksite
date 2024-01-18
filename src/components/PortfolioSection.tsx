@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import prokopjevaLenaSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
 import yachtingSpbsuSitePng from '../img/portfolio/yachting-spbsu_img.png';
+import vueExamplePng from '../img/portfolio/vue-example.png;
 import portgolioBgImg from '../img/portfolio/portfolioBg.png';
 import workBgImg from '../img/portfolio/workBg.png';
 
@@ -32,15 +33,18 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     const portfolio__works = Array.from({length: 8}, (_,index) => index);
     const workLinks = [
         'https://prokopjeva-lena.ru/',
-        'https://drunken1sailor.github.io/yachting-spbsu-client-build/'
+        'https://drunken1sailor.github.io/yachting-spbsu-client-build/',
+        'https://drunken1sailor.github.io/vue-example/'
     ];
     const workImages = [
         prokopjevaLenaSitePng,
-        yachtingSpbsuSitePng
+        yachtingSpbsuSitePng,
+        vueExamplePng
     ];
     const workNames = [
         'prokopjeva-lena.ru',
-        'yachting-spbsu.ru'
+        'yachting-spbsu.ru',
+        'vue-example'
     ];
     const workDescriptions = [
         'Website of artist Lena Prokopjeva',
