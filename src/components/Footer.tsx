@@ -26,7 +26,6 @@ const Footer = () => {
     return (
         <section className="section footer">
             <div className="mountain footer__mountain">
-                {/* <img src={mountainImg} alt="there should have been mountain here" draggable="false"/> */}
             </div>
             <div className="container footer__container">
                 <div className="row footer__row">

@@ -7,20 +7,26 @@ import workBgImg from '../img/portfolio/workBg.png';
 interface PortfolioSectionProps {
     scrollPos:number;
     handleMouseDown:React.MouseEventHandler<HTMLDivElement>;
+    handleTouchDown:React.TouchEventHandler<HTMLDivElement>;
     mousePosition:number;
     setMousePosition:React.Dispatch<React.SetStateAction<number>>;
     sliderScrollbarWidth:number;
     setSliderScrollbarWidth:React.Dispatch<React.SetStateAction<number>>;
+    sliderScrollbarThumbWidth:number;
+    setSliderScrollbarThumbWidth:React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     //props for scrolling slidebar
     const scrollPos = props.scrollPos;
     const handleMouseDown = props.handleMouseDown;
+    const handleTouchDown = props.handleTouchDown;
     const mousePosition = props.mousePosition;
     const setMousePosition = props.setMousePosition;
     const sliderScrollbarWidth = props.sliderScrollbarWidth;
     const setSliderScrollbarWidth = props.setSliderScrollbarWidth;
+    const sliderScrollbarThumbWidth = props.sliderScrollbarThumbWidth;
+    const setSliderScrollbarThumbWidth = props.setSliderScrollbarThumbWidth;
     
     //works data
     const portfolio__works = Array.from({length: 8}, (_,index) => index);
@@ -41,10 +47,12 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         'Prototype-site of Saint Petersburgs yachting club ' 
     ];
 
-    //data for scrolling and rotating functional
-    const sliderScrollbarRef = useRef<HTMLDivElement|null>(null);    
+    //vars for scrolling and rotating functional
+    const sliderScrollbarRef = useRef<HTMLDivElement|null>(null);  
+    const sliderScrollbarThumbRef = useRef<HTMLDivElement|null>(null);  
     const portfolioWorksRef = useRef<HTMLDivElement|null>(null);
     const [portfolioWorksWidth, setPortofolioWorksWidth] = useState(0);
+
     useEffect(()=>{
         if(sliderScrollbarRef.current){
             setSliderScrollbarWidth(sliderScrollbarRef.current.clientWidth);
@@ -52,11 +60,14 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         if(portfolioWorksRef.current){
             setPortofolioWorksWidth(portfolioWorksRef.current.clientWidth);
         }
-    },[]);
+        if(sliderScrollbarThumbRef.current){
+            setSliderScrollbarThumbWidth(sliderScrollbarThumbRef.current.clientWidth);
+        }
+    },[window.innerWidth]);
 
     const [movementPercent, setMovementPercent] = useState(0);
     useEffect(()=>{
-        setMovementPercent(mousePosition / (sliderScrollbarWidth-40));
+        setMovementPercent(mousePosition / (sliderScrollbarWidth-sliderScrollbarThumbWidth));
     },[mousePosition]);
 
     const workElements = document.querySelectorAll('.work') as NodeListOf<HTMLElement>;
@@ -75,29 +86,32 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     }
 
     //animatoin of works
+    const works = document.getElementById('works');
     let animationDelays = Array.from({length:workElements.length},(_,index)=>index*0.3);
     const temp = animationDelays.slice(6);
     animationDelays = animationDelays.slice(0,7);
     animationDelays = temp.concat(animationDelays);
-    const worksRotationAnimation = scrollPos>=1600;
-    const works = document.getElementById('works');
-    if(worksRotationAnimation){
-        works?.classList.add('worksRotationAnimation');
-        workElements.forEach(element=>{
-            element.classList.add('workAppearanceAnimation')
-        })
-    }
 
-    //adaptive condition for title animation
-    const element = document.getElementById("portfolio");
-    const elementRect = element?.getBoundingClientRect();
+    //adaptive
+    const portfolioElement = document.getElementById("portfolio");
+    const elementRect = portfolioElement?.getBoundingClientRect();
     const scrollTop = window.scrollY || window.pageYOffset;
     let portfolioTitleAnimation = false;
+
     if (elementRect) {
         const portfolioTop = elementRect.top + scrollTop;
         const portfolioBottom = elementRect.bottom + scrollTop;
         const portfolioHeight = portfolioBottom - portfolioTop;
         portfolioTitleAnimation = (scrollPos >= portfolioTop && scrollPos <= portfolioBottom-portfolioHeight*0.3);
+   
+   
+        const worksRotationAnimation = (scrollPos>=portfolioTop);
+        if(worksRotationAnimation){
+            works?.classList.add('worksRotationAnimation');
+            workElements.forEach(element=>{
+                element.classList.add('workAppearanceAnimation')
+            })
+        }
     } 
 
     //scrollHandler functional
@@ -127,11 +141,11 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
         event.preventDefault();
         let temp = mousePosition;
         temp += event.deltaY*0.3;
-        if(temp>=0 && temp<=sliderScrollbarWidth-40)
+        if(temp>=0 && temp<=sliderScrollbarWidth-sliderScrollbarThumbWidth)
             setMousePosition(temp);
         else if(temp<0)
             setMousePosition(0);
-        else setMousePosition(sliderScrollbarWidth-40);
+        else setMousePosition(sliderScrollbarWidth-sliderScrollbarThumbWidth);
     }
     works?.addEventListener("wheel", handleWheel);
     workElements.forEach(element=>{
@@ -161,9 +175,9 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
                                     'rotateY(0)':
                                     'rotateY(-360deg)'
                             }
-                            ${!isPCVersion?
-                                `rotateY(${touchPosition*0.2}deg`:
-                                ''
+                            ${isPCVersion?
+                                '':
+                                `rotateY(${touchPosition*0.2}deg`
                             }
                             `
                         }}
@@ -213,10 +227,12 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
                     </div>
                     <div ref={sliderScrollbarRef} className="slider__scrollbar scrollbar">
                         <div 
+                            ref={sliderScrollbarThumbRef}
                             className="scrollbar__thumb"
-                            style={{left: (mousePosition<0) ? '0px': (mousePosition>sliderScrollbarWidth-40) ? `${sliderScrollbarWidth-40}px` : `${mousePosition}px` }}
+                            style={{left: (mousePosition<0) ? '0px': (mousePosition>sliderScrollbarWidth-sliderScrollbarThumbWidth) ? `${sliderScrollbarWidth-sliderScrollbarThumbWidth}px` : `${mousePosition}px` }}
                             // style={{left: `${mousePosition}px`}}
                             onMouseDown={handleMouseDown}
+                            onTouchStart={handleTouchDown}
                         ></div>
                     </div>
                 </div>

@@ -92,10 +92,6 @@ const SkillsSection:React.FC<SkillsSectionProps> = (props) => {
             setSkillWidth(skillWidthExampleRef.current.clientWidth);
         }
         if(skillsSectionRef.current){
-            // setSkillsSectionWidth(skillsSection_element.offsetWidth);
-            // skillsSection__text_p_elements.forEach(element=>{
-            //     element.style.fontSize = `${skillsSectionWidth*0.015}px`;
-            // });
             setSkillsSectionWidth(skillsSectionRef.current.offsetWidth);
         }
         if(hobbyWidthExampleRef.current){
@@ -149,13 +145,7 @@ const SkillsSection:React.FC<SkillsSectionProps> = (props) => {
                             <p className="skillsSection__text_p skillsSection__text_p-2">with web development sometimes gives rise to </p>
                             <p className="skillsSection__text_p skillsSection__text_p-3">something very creative and sometimes even </p> 
                             <p className="skillsSection__text_p skillsSection__text_p-4">beautiful</p>
-                            <style>
-                                {`
-                                .skillsSection__text_p{
-                                    font-size:${skillsSectionWidth*0.015}px;
-                                }
-                                `}
-                            </style>
+                           
                         </div>
                         <div className="hobbies">
                             <div id='hobbiesTitle' className="title hobbies__title">
