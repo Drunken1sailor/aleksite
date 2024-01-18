@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import prokopjevaLenaSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
 import yachtingSpbsuSitePng from '../img/portfolio/yachting-spbsu_img.png';
-import vueExamplePng from '../img/portfolio/vue-example.png;
+import vueExamplePng from '../img/portfolio/vue-example.png';
 import portgolioBgImg from '../img/portfolio/portfolioBg.png';
 import workBgImg from '../img/portfolio/workBg.png';
 
@@ -48,7 +48,8 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     ];
     const workDescriptions = [
         'Website of artist Lena Prokopjeva',
-        'Prototype-site of Saint Petersburgs yachting club ' 
+        'Prototype-site of Saint Petersburgs yachting club ',
+        'Prototype of landing page, developed with Vue.js' 
     ];
 
     //vars for scrolling and rotating functional
