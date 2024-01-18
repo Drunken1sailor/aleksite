@@ -82,7 +82,6 @@ const SkillsSection:React.FC<SkillsSectionProps> = (props) => {
     const skillWidthExampleRef = useRef<HTMLDivElement|null>(null);
     const [skillWidth, setSkillWidth] = useState(0);
     const skillsSectionRef = useRef<HTMLDivElement|null>(null);
-    const [skillsSectionWidth, setSkillsSectionWidth] = useState(0);
     // const skillsSection_element = document.querySelector('.skillsSection') as HTMLElement | null;
     // const skillsSection__text_p_elements = document.querySelectorAll('.skillsSection__text_p') as NodeListOf<HTMLElement>;
     const hobbyWidthExampleRef = useRef<HTMLDivElement|null>(null);
@@ -90,9 +89,6 @@ const SkillsSection:React.FC<SkillsSectionProps> = (props) => {
     useEffect(()=>{
         if(skillWidthExampleRef.current){
             setSkillWidth(skillWidthExampleRef.current.clientWidth);
-        }
-        if(skillsSectionRef.current){
-            setSkillsSectionWidth(skillsSectionRef.current.offsetWidth);
         }
         if(hobbyWidthExampleRef.current){
             setHobbyWidth(hobbyWidthExampleRef.current.clientWidth);
