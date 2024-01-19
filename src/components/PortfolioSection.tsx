@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import prokopjevaLenaSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
-import yachtingSpbsuSitePng from '../img/portfolio/yachting-spbsu_img.png';
-import vueExamplePng from '../img/portfolio/vue-example.png';
 import portgolioBgImg from '../img/portfolio/portfolioBg.png';
 import workBgImg from '../img/portfolio/workBg.png';
+import prokopjevaLenaSitePng from '../img/portfolio/prokopjeva-lena.ru.png';
+import vueExamplePng from '../img/portfolio/vue-example.png';
+import finKitPng from '../img/portfolio/FinKit.png';
 
 interface PortfolioSectionProps {
     scrollPos:number;
@@ -33,22 +33,22 @@ const PortfolioSection:React.FC<PortfolioSectionProps> = (props) => {
     const portfolio__works = Array.from({length: 8}, (_,index) => index);
     const workLinks = [
         'https://prokopjeva-lena.ru/',
-        'https://drunken1sailor.github.io/yachting-spbsu-client-build/',
+        'https://drunken1sailor.github.io/FinkitTest/',
         'https://drunken1sailor.github.io/vue-example/'
     ];
     const workImages = [
         prokopjevaLenaSitePng,
-        yachtingSpbsuSitePng,
+        finKitPng,
         vueExamplePng
     ];
     const workNames = [
         'prokopjeva-lena.ru',
-        'yachting-spbsu.ru',
+        'FinKit-test',
         'vue-example'
     ];
     const workDescriptions = [
-        'Website of artist Lena Prokopjeva',
-        'Prototype-site of Saint Petersburgs yachting club ',
+        'Website of artist Lena Prokopjeva, developed with HTML and PHP',
+        'Prototype of landing page, developed with native HTML',
         'Prototype of landing page, developed with Vue.js' 
     ];
 
